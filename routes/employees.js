@@ -36,11 +36,29 @@ router.post('/', async (req, res) => {
 
 })
 
-router.patch('/', getEmployee, (req, res) => {
+router.patch('/', getEmployee, async (req, res) => {
+    if (req.body.name != null) {
+        res.employee.name = res.body.name
+    }
+    if (req.body.lastName != null) {
+        res.employee.lastName = res.body.lastName
+    }
+    try {
+        const updatedEmployee = await res.employee.save()
+        res.json(updatedEmployee)
+    } catch (err) {
+        res.status(400).json({ messge: err.message})
+    }
 
 })
 
-router.delete('/:id', getEmployee, (req, res) => {
+router.delete('/:id', getEmployee, async (req, res) => {
+    try {
+        await res.employee.remove()
+        res.json({ message: 'Deleted employee'})
+    } catch (err){
+        res.status(500).json({ messge: err.message })
+    }
 
 })
 
